@@ -1,22 +1,46 @@
- <div class="container" >
-
+<div class="container">
   <mat-toolbar class="toolbar">
     <span>My Application</span>
   </mat-toolbar>
 
   <mat-drawer-container class="example-container" autosize>
     <mat-drawer #drawer class="example-sidenav" mode="side">
-  <!--
+      <!--
      <button (click)="showFiller = !showFiller" mat-raised-button>
         Toggle extra text
       </button>
    -->
-    </mat-drawer>
 
-    <div class="example-button-container">
+   <input type="text" class="form-control" [(ngModel)]="searchText" [ngbTypeahead]="pokemonService.search"
+   [inputFormatter]="formatSearchInput" placeholder="Search for a Pokémon"/>
+
+    </mat-drawer>
+    <div>
       <button mat-fab color="accent" (click)="drawer.toggle()">
         <mat-icon>chevron_right</mat-icon>
       </button>
     </div>
+
+
+    <!-- div *ngIf="pokemon">
+      <h1>{{ pokemon.name }}</h1>
+      <img [src]="pokemon.sprites.front_default" alt="{{ pokemon.name }}" />
+      <p>Height: {{ pokemon.height }}</p>
+      <p>Weight: {{ pokemon.weight }}</p>
+      <p>Weight: {{ pokemon.weight }}</p>
+      <p>Abilities:</p>
+      <ul>
+        <li *ngFor="let ability of pokemon.abilities">
+          {{ ability.ability.name }}
+        </li>
+      </ul>
+    </div> -->
+
+    <button id="btPok" *ngFor="let pokemon of filteredPokemonList" type="button" class="btn btn-primary">
+      <img [src]="pokemon.spriteUrl" alt="{{ pokemon.name }} sprite" />
+      <h5 class="card-title">{{ pokemon.name }} {{ pokemon.id }}</h5>
+    </button>
+
+
   </mat-drawer-container>
- </div>
+</div>

@@ -1,26 +1,26 @@
-import { Component } from '@angular/core';
-
-export interface Tile {
-  color: string;
-  cols: number;
-  rows: number;
-  text: string;
-}
+import { Component, OnInit } from '@angular/core';
+import { PokemonService } from './pokemon.service';
 
 @Component({
   selector: 'app-root',
   templateUrl: './app.component.html',
-  styleUrls: ['./app.component.scss']
+  styleUrls: ['./app.component.scss'],
 })
-
 export class AppComponent {
-  title = 'pokepediaJP';
-  showFiller = false;
+  searchTerm = '';
+  searchText: string = '';
+  formatSearchResult = (item: any) => item.name;
+  formatSearchInput = (value: string) => value.toLowerCase().trim();
 
-  tiles: Tile[] = [
-  {text: 'One', cols: 4, rows: 1, color: 'lightblue'},
-  {text: 'Three', cols: 1, rows: 1, color: 'lightpink'},
-  {text: 'Four', cols: 3, rows: 2, color: '#DDBDF1'},
-  ];
+  constructor(protected readonly pokemonService: PokemonService) {
+  }
+
+  ngOnInit(): void {
+    this.pokemonService.getAllPokemonLista();
+  }
+
+  get filteredPokemonList() {
+    return this.pokemonService.pokemonList.filter(pokemon => pokemon.name.toLowerCase().includes(this.searchText.toLowerCase()));
+  }
+
 }
-
