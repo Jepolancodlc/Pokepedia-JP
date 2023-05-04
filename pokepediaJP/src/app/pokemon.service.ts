@@ -3,6 +3,7 @@ import { Injectable } from '@angular/core';
 import { Observable, debounceTime, distinctUntilChanged, map } from 'rxjs';
 import Pokedex from 'pokedex-promise-v2';
 import PokeAPI from 'pokedex-promise-v2';
+import { Pokemon } from './Pokemon';
 
 const pokedex = new Pokedex();
 
@@ -10,28 +11,24 @@ const pokedex = new Pokedex();
   providedIn: 'root',
 })
 export class PokemonService {
-  private readonly apiUrl = 'https://pokeapi.co/api/v2';
   private pokedex: Pokedex = new PokeAPI();
   public pokemonList: any[] = [];
   searchText: string = '';
+  allTypes: string[] = [];
+  public offset = 0;
 
-  constructor(private http: HttpClient) { }
-
-  getAllPokemon(): Promise<any[]> {
-    return this.pokedex
-      .getPokemonsList()
-      .then((response: { results: any }) => response.results);
+  constructor(private http: HttpClient) {
+    this.getAllTypes();
   }
 
-  getPokemon(name: string): Observable<any> {
-    const url = `${this.apiUrl}/pokemon/${name}`;
-    return this.http.get(url);
-  }
-
-  get filteredPokemonList() {
-    return this.pokemonList.filter((pokemon) =>
-      pokemon.name.toLowerCase().includes(this.searchText.toLowerCase())
-    );
+  getAllTypes() {
+    this.pokedex.getTypesList().then((response) => {
+      response.results.forEach((result) => {
+        this.pokedex.getTypeByName(result.name).then((type) => {
+          this.allTypes.push(type.name);
+        });
+      });
+    });
   }
 
   get PokemonNames(): string[] {
@@ -46,59 +43,56 @@ export class PokemonService {
         term.length < 1
           ? []
           : this.PokemonNames.filter(
-            (name) => name.toLowerCase().indexOf(term.toLowerCase()) > -1
-          ).slice(0, 5)
+              (name) => name.toLowerCase().indexOf(term.toLowerCase()) > -1
+            ).slice(0, 5)
       )
     );
-    allTypes: string[] = [];
 
   public getAllPokemonLista() {
-    pokedex.getPokemonsList().then((response) => {
+    pokedex.getPokemonsList({ limit: 50 }).then((response) => {
       const pokemonPromises = response.results.map((result: any) => {
         return pokedex.getPokemonByName(result.name);
       });
       Promise.all(pokemonPromises).then((pokemons) => {
-        this.pokemonList = pokemons.map((pokemon: any) => {
-          const types = pokemon.types.map((type: any) => type.type.name);
-          this.allTypes = [...new Set([...this.allTypes, ...types])];
-          return {
-            id: pokemon.id,
-            name: pokemon.name,
-            spriteUrl: pokemon.sprites.front_default,
-            type: types,
-            imageurl: `https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/${pokemon.id}.png`,
-            stats: {
-              hp: pokemon.stats.find((stat: any) => stat.stat.name === 'hp')
-                .base_stat,
-              attack: pokemon.stats.find(
-                (stat: any) => stat.stat.name === 'attack'
-              ).base_stat,
-              defense: pokemon.stats.find(
-                (stat: any) => stat.stat.name === 'defense'
-              ).base_stat,
-              speed: pokemon.stats.find(
-                (stat: any) => stat.stat.name === 'speed'
-              ).base_stat,
-            },
-          };
-        });
+        this.pokemonList = pokemons.map(this.transformPokemon);
       });
     });
   }
 
-  public getAllPokemonLista1() {
-    this.getAllPokemon()
-      .then((response: any[]) => {
-        this.pokemonList = response.map((pokemon: any) => ({
-          name: pokemon.name,
-          id: pokemon.id,
-          imageurl: `https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/${pokemon.url?.match(/\/(\d+)\/$/)?.[1]
-            }.png`,
-        }));
-      })
-      .catch((error: any) => console.log(error));
+  public loadMorePokemon() {
+    this.offset += 50;
+    pokedex
+      .getPokemonsList({ limit: 50, offset: this.offset })
+      .then((response) => {
+        const pokemonPromises = response.results.map((result: any) => {
+          return pokedex.getPokemonByName(result.name);
+        });
+        Promise.all(pokemonPromises).then((pokemons) => {
+          const newPokemonList = pokemons.map((pokemon: any) => {
+            return this.transformPokemon(pokemon);
+          });
+          this.pokemonList = [...this.pokemonList, ...newPokemonList];
+        });
+      });
   }
 
-
-
+  transformPokemon(pokemon: any): Pokemon {
+    return {
+      id: pokemon.id,
+      name: pokemon.name,
+      spriteUrl: pokemon.sprites.front_default,
+      type: pokemon.types.map((type: any) => type.type.name),
+      imageurl: `https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/${pokemon.id}.png`,
+      stats: {
+        hp: pokemon.stats.find((stat: any) => stat.stat.name === 'hp')
+          .base_stat,
+        attack: pokemon.stats.find((stat: any) => stat.stat.name === 'attack')
+          .base_stat,
+        defense: pokemon.stats.find((stat: any) => stat.stat.name === 'defense')
+          .base_stat,
+        speed: pokemon.stats.find((stat: any) => stat.stat.name === 'speed')
+          .base_stat,
+      },
+    };
+  }
 }

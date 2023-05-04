@@ -12,6 +12,7 @@
    -->
       <input type="text" class="form-control" [(ngModel)]="searchText" [ngbTypeahead]="pokemonService.search"
         [inputFormatter]="formatSearchInput" placeholder="Search for a Pokémon" />
+        <button class="btn btn-primary" (click)="pokemonService.loadMorePokemon()">Load More</button>
 
         <div *ngFor="let type of pokemonService.allTypes; let i = index;">
           <input type="checkbox" [checked]="selectedTypes[i]" (change)="onTypeCheckboxChange($event, i)">

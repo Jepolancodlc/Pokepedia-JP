@@ -20,31 +20,28 @@ export class AppComponent {
   ngOnInit(): void {
     this.pokemonService.getAllPokemonLista();
 
-    console.log( this.pokemonService.getAllPokemonLista());
-
   }
   selectedTypes: boolean[] = []; // Arreglo que representa el estado de los checkboxes
 
-
   get filteredPokemonList() {
-    let selectedTypesCount = this.selectedTypes.filter(x => x).length; // Contador de tipos seleccionados
+    let selectedTypesCount = this.selectedTypes.filter(x => x).length;
 
-    if (selectedTypesCount === 2) { // Se han seleccionado exactamente dos tipos
+    if (selectedTypesCount === 2) {
       return this.pokemonService.pokemonList.filter(pokemon => {
-        let pokemonTypes = pokemon.type.sort(); // Ordenamos los tipos del Pokémon para compararlos fácilmente con los tipos seleccionados
+        let pokemonTypes = pokemon.type.sort();
         let selectedTypes = this.selectedTypes.map((isSelected, index) => {
           if (isSelected) {
             return this.pokemonService.allTypes[index];
           } else {
             return null;
           }
-        }).filter(x => x); // Obtenemos los tipos seleccionados
+        }).filter(x => x);
 
-        return pokemonTypes.length === 2 && // El Pokémon debe tener exactamente dos tipos
-               pokemonTypes[0] === selectedTypes[0] && // El primer tipo debe ser el primer tipo seleccionado
-               pokemonTypes[1] === selectedTypes[1]; // El segundo tipo debe ser el segundo tipo seleccionado
+        return pokemonTypes.length === 2 &&
+               pokemonTypes.includes(selectedTypes[0]) &&
+               pokemonTypes.includes(selectedTypes[1]);
       });
-    } else if (selectedTypesCount === 1) { // Se ha seleccionado un solo tipo
+    } else if (selectedTypesCount === 1) {
       return this.pokemonService.pokemonList.filter(pokemon => {
         return this.selectedTypes.some((isSelected, index) => {
           if (isSelected) {
@@ -53,12 +50,16 @@ export class AppComponent {
           return false;
         }) && pokemon.name.toLowerCase().includes(this.searchText.toLowerCase());
       });
-    } else { // No se ha seleccionado ningún tipo
+    } else {
       return this.pokemonService.pokemonList.filter(pokemon =>
         pokemon.name.toLowerCase().includes(this.searchText.toLowerCase())
       );
     }
   }
+
+
+
+
 
 
   // Función que se ejecuta cuando se hace clic en un checkbox
