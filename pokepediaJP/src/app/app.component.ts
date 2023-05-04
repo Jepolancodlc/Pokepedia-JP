@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { PokemonService } from './pokemon.service';
+import  Pokedex  from 'pokedex-promise-v2';
 
 @Component({
   selector: 'app-root',
@@ -15,8 +16,12 @@ export class AppComponent {
   constructor(protected readonly pokemonService: PokemonService) {
   }
 
+
   ngOnInit(): void {
     this.pokemonService.getAllPokemonLista();
+
+    console.log( this.pokemonService.getAllPokemonLista());
+
   }
 
   get filteredPokemonList() {

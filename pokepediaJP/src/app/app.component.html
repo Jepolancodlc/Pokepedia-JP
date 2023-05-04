@@ -10,17 +10,15 @@
         Toggle extra text
       </button>
    -->
-
-   <input type="text" class="form-control" [(ngModel)]="searchText" [ngbTypeahead]="pokemonService.search"
-   [inputFormatter]="formatSearchInput" placeholder="Search for a Pokémon"/>
-
+      <input type="text" class="form-control" [(ngModel)]="searchText" [ngbTypeahead]="pokemonService.search"
+        [inputFormatter]="formatSearchInput" placeholder="Search for a Pokémon" />
     </mat-drawer>
+
     <div>
       <button mat-fab color="accent" (click)="drawer.toggle()">
         <mat-icon>chevron_right</mat-icon>
       </button>
     </div>
-
 
     <!-- div *ngIf="pokemon">
       <h1>{{ pokemon.name }}</h1>
@@ -37,10 +35,10 @@
     </div> -->
 
     <button id="btPok" *ngFor="let pokemon of filteredPokemonList" type="button" class="btn btn-primary">
-      <img [src]="pokemon.spriteUrl" alt="{{ pokemon.name }} sprite" />
-      <h5 class="card-title">{{ pokemon.name }} {{ pokemon.id }}</h5>
+      <img [src]="pokemon.imageurl" alt="{{ pokemon.name }} sprite" />
+      <h5 class="card-title">{{ pokemon.id }}</h5>
+      <p>{{ pokemon.name }}</p>
+      <p>{{ pokemon.type }}</p>
     </button>
-
-
   </mat-drawer-container>
 </div>
