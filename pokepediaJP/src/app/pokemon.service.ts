@@ -13,9 +13,11 @@ const pokedex = new Pokedex();
 export class PokemonService {
   private pokedex: Pokedex = new PokeAPI();
   public pokemonList: any[] = [];
-  searchText: string = '';
   allTypes: string[] = [];
-  public offset = 0;
+  searchText: string = '';
+
+  numShown = 50;
+  numMoreToShow = 10;
 
   constructor(private http: HttpClient) {
     this.getAllTypes();
@@ -66,7 +68,7 @@ export class PokemonService {
       name: pokemon.name,
       spriteUrl: pokemon.sprites.front_default,
       type: pokemon.types.map((type: any) => type.type.name),
-      imageurl: `https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/${pokemon.id}.png`,
+      imageUrl: `https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/${pokemon.id}.png`,
       stats: {
         hp: pokemon.stats.find((stat: any) => stat.stat.name === 'hp')
           .base_stat,

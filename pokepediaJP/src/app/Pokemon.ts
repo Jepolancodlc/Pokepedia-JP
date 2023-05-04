@@ -3,7 +3,7 @@ export interface Pokemon {
   name: string;
   spriteUrl: string;
   type: string[];
-  imageurl: string;
+  imageUrl: string;
   stats: {
     hp: number;
     attack: number;

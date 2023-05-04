@@ -5,50 +5,13 @@
 
   <mat-drawer-container class="example-container" autosize>
     <mat-drawer #drawer class="example-sidenav" mode="side">
-      <!--
-     <button (click)="showFiller = !showFiller" mat-raised-button>
-        Toggle extra text
-      </button>
-   -->
-      <input type="text" class="form-control" [(ngModel)]="searchText" [ngbTypeahead]="pokemonService.search"
-        [inputFormatter]="formatSearchInput" placeholder="Search for a Pokémon" />
-        <!-- <button class="btn btn-primary" (click)="pokemonService.loadMorePokemon()">Load More</button> -->
-
-        <div *ngFor="let type of pokemonService.allTypes; let i = index;">
-          <input type="checkbox" [checked]="selectedTypes[i]" (change)="onTypeCheckboxChange($event, i)">
-          {{ type }}
-        </div>
-
-
-
-
+      <app-sidenav [selectedTypes]="selectedTypes"></app-sidenav>
     </mat-drawer>
 
-    <div>
-      <button mat-fab color="accent" (click)="drawer.toggle()">
-        <mat-icon>chevron_right</mat-icon>
-      </button>
-    </div>
-
-    <!-- div *ngIf="pokemon">
-      <h1>{{ pokemon.name }}</h1>
-      <img [src]="pokemon.sprites.front_default" alt="{{ pokemon.name }}" />
-      <p>Height: {{ pokemon.height }}</p>
-      <p>Weight: {{ pokemon.weight }}</p>
-      <p>Weight: {{ pokemon.weight }}</p>
-      <p>Abilities:</p>
-      <ul>
-        <li *ngFor="let ability of pokemon.abilities">
-          {{ ability.ability.name }}
-        </li>
-      </ul>
-    </div> -->
-
-    <button id="btPok" *ngFor="let pokemon of filteredPokemonList" type="button" class="btn btn-primary">
-      <img [src]="pokemon.imageurl" alt="{{ pokemon.name }} sprite" />
-      <h5 class="card-title">{{ pokemon.id }}</h5>
-      <p>{{ pokemon.name }}</p>
-      <p>{{ pokemon.type }}</p>
-    </button>
+    <app-pokegrid
+      [drawer]="drawer"
+      [filteredPokemonList]="filteredPokemonList"
+      [numShown]="numShown"
+    ></app-pokegrid>
   </mat-drawer-container>
 </div>

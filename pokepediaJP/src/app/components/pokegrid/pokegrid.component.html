@@ -1,0 +1,13 @@
+<div>
+  <button mat-fab color="accent" (click)="drawer.toggle()">
+    <mat-icon>chevron_right</mat-icon>
+  </button>
+</div>
+
+<button id="btPok" *ngFor="let pokemon of filteredPokemonList.slice(0, pokemonService.numShown)" type="button"
+  class="btn btn-primary">
+  <img [src]="pokemon.imageUrl" alt="{{ pokemon.name }} sprite" />
+  <h5 class="card-title">{{ pokemon.id }}</h5>
+  <p>{{ pokemon.name }}</p>
+  <p>{{ pokemon.type }}</p>
+</button>

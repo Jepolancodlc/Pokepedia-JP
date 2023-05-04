@@ -1,6 +1,5 @@
-import { Component, OnInit } from '@angular/core';
+import { Component } from '@angular/core';
 import { PokemonService } from './pokemon.service';
-import Pokedex from 'pokedex-promise-v2';
 
 @Component({
   selector: 'app-root',
@@ -8,22 +7,20 @@ import Pokedex from 'pokedex-promise-v2';
   styleUrls: ['./app.component.scss'],
 })
 export class AppComponent {
-  searchTerm = '';
-  searchText: string = '';
-  formatSearchResult = (item: any) => item.name;
-  formatSearchInput = (value: string) => value.toLowerCase().trim();
+  selectedTypes: boolean[] = []; // Arreglo que representa el estado de los checkboxes
+  numShown = 0;
 
   constructor(protected readonly pokemonService: PokemonService) {}
 
   ngOnInit(): void {
     this.pokemonService.getAllPokemonLista();
   }
-  selectedTypes: boolean[] = []; // Arreglo que representa el estado de los checkboxes
 
   get filteredPokemonList() {
     let selectedTypesCount = this.selectedTypes.filter((x) => x).length;
 
     if (selectedTypesCount === 2) {
+      this.pokemonService.numShown = 1008;
       return this.pokemonService.pokemonList.filter((pokemon) => {
         let pokemonTypes = pokemon.type.sort();
         let selectedTypes = this.selectedTypes
@@ -43,6 +40,7 @@ export class AppComponent {
         );
       });
     } else if (selectedTypesCount === 1) {
+      this.pokemonService.numShown = 1008;
       return this.pokemonService.pokemonList.filter((pokemon) => {
         return (
           this.selectedTypes.some((isSelected, index) => {
@@ -51,29 +49,17 @@ export class AppComponent {
             }
             return false;
           }) &&
-          pokemon.name.toLowerCase().includes(this.searchText.toLowerCase())
+          pokemon.name
+            .toLowerCase()
+            .includes(this.pokemonService.searchText.toLowerCase())
         );
       });
     } else {
       return this.pokemonService.pokemonList.filter((pokemon) =>
-        pokemon.name.toLowerCase().includes(this.searchText.toLowerCase())
+        pokemon.name
+          .toLowerCase()
+          .includes(this.pokemonService.searchText.toLowerCase())
       );
     }
-  }
-
-  // Función que se ejecuta cuando se hace clic en un checkbox
-  onTypeCheckboxChange(event: Event, index: number) {
-    const checked = (event.target as HTMLInputElement).checked;
-
-    // Verificar si ya hay dos tipos seleccionados
-    const selectedTypesCount = this.selectedTypes.filter((x) => x).length;
-    if (selectedTypesCount >= 2 && checked) {
-      // Desactivar la selección del checkbox actual
-      (event.target as HTMLInputElement).checked = false;
-      return;
-    }
-
-    // Permitir la selección del checkbox actual
-    this.selectedTypes[index] = checked;
   }
 }
