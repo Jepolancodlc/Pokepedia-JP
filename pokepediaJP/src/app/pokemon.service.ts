@@ -49,7 +49,7 @@ export class PokemonService {
     );
 
   public getAllPokemonLista() {
-    pokedex.getPokemonsList({ limit: 50 }).then((response) => {
+    pokedex.getPokemonsList({ limit: 1008 }).then((response) => {
       const pokemonPromises = response.results.map((result: any) => {
         return pokedex.getPokemonByName(result.name);
       });
@@ -59,22 +59,6 @@ export class PokemonService {
     });
   }
 
-  public loadMorePokemon() {
-    this.offset += 50;
-    pokedex
-      .getPokemonsList({ limit: 50, offset: this.offset })
-      .then((response) => {
-        const pokemonPromises = response.results.map((result: any) => {
-          return pokedex.getPokemonByName(result.name);
-        });
-        Promise.all(pokemonPromises).then((pokemons) => {
-          const newPokemonList = pokemons.map((pokemon: any) => {
-            return this.transformPokemon(pokemon);
-          });
-          this.pokemonList = [...this.pokemonList, ...newPokemonList];
-        });
-      });
-  }
 
   transformPokemon(pokemon: any): Pokemon {
     return {
