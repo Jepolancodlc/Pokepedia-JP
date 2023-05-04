@@ -50,6 +50,7 @@ export class PokemonService {
           ).slice(0, 5)
       )
     );
+    allTypes: string[] = [];
 
   public getAllPokemonLista() {
     pokedex.getPokemonsList().then((response) => {
@@ -58,11 +59,13 @@ export class PokemonService {
       });
       Promise.all(pokemonPromises).then((pokemons) => {
         this.pokemonList = pokemons.map((pokemon: any) => {
+          const types = pokemon.types.map((type: any) => type.type.name);
+          this.allTypes = [...new Set([...this.allTypes, ...types])];
           return {
             id: pokemon.id,
             name: pokemon.name,
             spriteUrl: pokemon.sprites.front_default,
-            type: pokemon.types.map((type: any) => type.type.name),
+            type: types,
             imageurl: `https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/${pokemon.id}.png`,
             stats: {
               hp: pokemon.stats.find((stat: any) => stat.stat.name === 'hp')
@@ -83,7 +86,6 @@ export class PokemonService {
     });
   }
 
-
   public getAllPokemonLista1() {
     this.getAllPokemon()
       .then((response: any[]) => {
@@ -96,4 +98,7 @@ export class PokemonService {
       })
       .catch((error: any) => console.log(error));
   }
+
+
+
 }

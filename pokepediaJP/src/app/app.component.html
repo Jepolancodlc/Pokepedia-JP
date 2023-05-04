@@ -12,6 +12,15 @@
    -->
       <input type="text" class="form-control" [(ngModel)]="searchText" [ngbTypeahead]="pokemonService.search"
         [inputFormatter]="formatSearchInput" placeholder="Search for a Pokémon" />
+
+        <div *ngFor="let type of pokemonService.allTypes; let i = index;">
+          <input type="checkbox" [checked]="selectedTypes[i]" (change)="onTypeCheckboxChange($event, i)">
+          {{ type }}
+        </div>
+
+
+
+
     </mat-drawer>
 
     <div>
