@@ -2,8 +2,8 @@ import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Observable, debounceTime, distinctUntilChanged, map } from 'rxjs';
 import Pokedex from 'pokedex-promise-v2';
+import { IPokemon } from './IPokemon';
 import PokeAPI from 'pokedex-promise-v2';
-import { Pokemon } from './Pokemon';
 
 const pokedex = new Pokedex();
 
@@ -11,7 +11,7 @@ const pokedex = new Pokedex();
   providedIn: 'root',
 })
 export class PokemonService {
-  private pokedex: Pokedex = new PokeAPI();
+  private pokedex: Pokedex = new PokeAPI;
   public pokemonList: any[] = [];
   allTypes: string[] = [];
   searchText: string = '';
@@ -62,7 +62,7 @@ export class PokemonService {
   }
 
 
-  transformPokemon(pokemon: any): Pokemon {
+  transformPokemon(pokemon: any): IPokemon {
     return {
       id: pokemon.id,
       name: pokemon.name,
